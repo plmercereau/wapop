@@ -1,5 +1,5 @@
 apiVersion: v2
-name: wapop
+name: wapop-chart
 description: An operator to manage Wifi access points of the cluster's nodes
 type: application
 version: 0.1.0
