@@ -41,7 +41,7 @@
         system = "${pkgs.stdenv.hostPlatform.uname.system}_${pkgs.stdenv.hostPlatform.linuxArch}";
         hashes = {
           "Darwin_arm64" = "sha256-8YHUsztufdpaG0/ij6gjXUN5NHopRoKLAUKTSOSzRvo=";
-          "Linux_x86_64" = "";
+          "Linux_x86_64" = "sha256-P7SR3WV6Z2EnvVyk/PMu2CKJjuZGWOXk2/NMD5WmphM=";
         };
       in
         pkgs.fetchzip {

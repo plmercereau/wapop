@@ -14,7 +14,7 @@ on:
 jobs:
   build-and-push-images:
     runs-on: ubuntu-latest
-    name: "Image: ${{ matrix.image.name }}"
+    name: "Release image: ${{ matrix.image.name }}"
     strategy:
       matrix:
         image:
@@ -80,6 +80,7 @@ jobs:
           cache-to: type=gha,mode=max
 
   release-chart:
+    name: "Release chart"
     permissions:
       contents: write
     runs-on: ubuntu-latest
