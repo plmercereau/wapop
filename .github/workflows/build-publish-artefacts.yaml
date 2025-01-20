@@ -113,7 +113,7 @@ jobs:
         uses: appany/helm-oci-chart-releaser@v0.3.0
         with:
           name: wapop-chart
-          repository: ${{ github.repository_owner }}
+          repository: ${{ github.repository }}
           tag: ${{ env.VERSION }}
           path: chart
           registry: ghcr.io
