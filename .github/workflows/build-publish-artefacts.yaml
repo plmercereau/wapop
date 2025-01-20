@@ -100,14 +100,14 @@ jobs:
       - name: Install devenv.sh
         run: nix profile install nixpkgs#devenv
 
-      - name: Generate the chart
-        run: devenv shell make helm VERSION=${GITHUB_REF_NAME}
-
       - name: Write release version
         run: |
           VERSION=${GITHUB_REF_NAME#v}
           echo Version: $VERSION
           echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Generate the chart
+        run: devenv shell make helm VERSION=${{ env.VERSION }}
       
       - name: Chart | Push
         uses: appany/helm-oci-chart-releaser@v0.3.0

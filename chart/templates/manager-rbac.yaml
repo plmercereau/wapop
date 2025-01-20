@@ -9,6 +9,7 @@ rules:
   - ""
   resources:
   - configmaps
+  - nodes
   - secrets
   verbs:
   - get
@@ -25,14 +26,6 @@ rules:
   - list
   - patch
   - update
-  - watch
-- apiGroups:
-  - ""
-  resources:
-  - nodes
-  verbs:
-  - get
-  - list
   - watch
 - apiGroups:
   - wifi.networking.platyplus.io

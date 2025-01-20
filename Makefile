@@ -294,5 +294,5 @@ catalog-push: ## Push a catalog image.
 helm: manifests
 	kustomize build config/default | helmify -crd-dir 
 	@# add config/values.yaml at the beginning of the generated chart/values.yaml
-	yq eval '.controllerManager.manager.image.tag = "$(VERSION)"' -i chart/values.yaml
+	yq eval '.controllerManager.manager.image.tag = "v$(VERSION)"' -i chart/values.yaml
 	sed -i '1e cat config/values.yaml' chart/values.yaml
