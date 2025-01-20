@@ -20,7 +20,7 @@
         system = "${os}_${arch}";
         hashes = {
           "darwin_arm64" = "sha256-Nf+tZJU0NejmbjuAJdUtwhOrCPimw/7Z6PwNlve8nIQ=";
-          "linux_amd64" = "";
+          "linux_amd64" = "sha256-NfdZAQwFrvf+2d6zGkamaCrt/3q/jBCTMczZMclm5sA=";
         };
       in
         pkgs.fetchurl {
@@ -41,7 +41,7 @@
         system = "${pkgs.stdenv.hostPlatform.uname.system}_${pkgs.stdenv.hostPlatform.linuxArch}";
         hashes = {
           "Darwin_arm64" = "sha256-yelo1YhTk/Zj0C2w64ii1xDOTdUuMSNV5+Sk6ZXlsoc=";
-          "Linux_x86_64" = "";
+          "Linux_x86_64" = "sha256-CAXDkJgZwChaeeup7W8l0lne9k5Qzmi3Sgs0LMpmGoA=";
         };
       in
         pkgs.fetchurl {
