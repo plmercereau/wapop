@@ -21,5 +21,4 @@
 
 ## TODO
 
-- [ ] CI/CD pipeline
 - [ ] Readme
