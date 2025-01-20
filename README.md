@@ -4,7 +4,7 @@
 
 ### Prerequisites
 
-- bridge
+- Bridge
 - NM version
 
 ## Limitations
