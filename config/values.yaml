@@ -1,0 +1,8 @@
+ssid: ""
+# If the psk is set, it will create the secret
+# psk: "" 
+# nodeSelector: 
+# Example:
+# nodeSelector: 
+#   matchLabels:
+#     productName: "rpi"

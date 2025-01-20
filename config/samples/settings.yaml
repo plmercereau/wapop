@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: wifi-settings
+  namespace: wapop
+stringData:
+  psk: Pilette1
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wifi-settings
+  namespace: wapop
+data:
+  ssid: rpi-tutu
+  nodeSelector: |
+    matchLabels:
+      productName: "rpi"
