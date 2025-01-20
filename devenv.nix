@@ -13,7 +13,10 @@
           if pkgs.stdenv.hostPlatform.isDarwin
           then "darwin"
           else "linux";
-        arch = pkgs.stdenv.hostPlatform.linuxArch;
+        arch =
+          if pkgs.stdenv.hostPlatform.isAarch64
+          then "arm64"
+          else "amd64";
         hashes = {
           "darwin-arm64" = "sha256-Nf+tZJU0NejmbjuAJdUtwhOrCPimw/7Z6PwNlve8nIQ=";
           "linux-amd64" = "";
