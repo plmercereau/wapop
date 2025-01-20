@@ -40,18 +40,18 @@
       src = let
         system = "${pkgs.stdenv.hostPlatform.uname.system}_${pkgs.stdenv.hostPlatform.linuxArch}";
         hashes = {
-          "Darwin_arm64" = "sha256-yelo1YhTk/Zj0C2w64ii1xDOTdUuMSNV5+Sk6ZXlsoc=";
-          "Linux_x86_64" = "sha256-CAXDkJgZwChaeeup7W8l0lne9k5Qzmi3Sgs0LMpmGoA=";
+          "Darwin_arm64" = "sha256-8YHUsztufdpaG0/ij6gjXUN5NHopRoKLAUKTSOSzRvo=";
+          "Linux_x86_64" = "";
         };
       in
-        pkgs.fetchurl {
+        pkgs.fetchzip {
           url = "https://github.com/arttor/helmify/releases/download/v0.4.17/helmify_${system}.tar.gz";
           sha256 = hashes.${system};
         };
       phases = ["installPhase" "patchPhase"];
       installPhase = ''
         mkdir -p $out/bin
-        cp $src $out/bin/helmify
+        cp -r $src/helmify $out/bin/helmify
         chmod +x $out/bin/helmify
       '';
     };
