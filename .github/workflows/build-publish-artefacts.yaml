@@ -1,4 +1,6 @@
 # TODO Readme on docker hub / ghcr.io
+# TODO https://www.blacksmith.sh/blog/building-multi-platform-docker-images-for-arm64-in-github-actions
+# TODO https://docs.docker.com/build/ci/github-actions/multi-platform/#distribute-build-across-multiple-runners
 name: Build and Publish artefacts
 
 on:
@@ -80,19 +82,31 @@ jobs:
     permissions:
       contents: write
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/v')
+    # if: startsWith(github.ref, 'refs/tags/v')
+    # needs: build-and-push-images
     steps:
-      - name: Write release version
-        run: |
-          VERSION=${GITHUB_REF_NAME#v}
-          echo Version: $VERSION
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-          
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
+      - uses: cachix/install-nix-action@v26
+
+      - uses: cachix/cachix-action@v14
+        with:
+          name: devenv
+      - name: Install devenv.sh
+        run: nix profile install nixpkgs#devenv
+
+      - name: Generate the chart
+        run: devenv shell make helm VERSION=${GITHUB_REF_NAME}
+
+      - name: Write release version
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          echo Version: $VERSION
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+      
       - name: Chart | Push
         uses: appany/helm-oci-chart-releaser@v0.3.0
         with:

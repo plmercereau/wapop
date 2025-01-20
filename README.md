@@ -1,4 +1,4 @@
-# Wifi Access Point Operator (WAPOP)
+# Wapop - Wifi Access Point Operator
 
 ## Installation
 
@@ -8,6 +8,9 @@
 - NM version
 
 ## Limitations
+
+- A bridge must exist and be named `br0`
+- Wireless interface should be named `wlan0`
 
 ## Roadmap
 
