@@ -35,7 +35,6 @@ jobs:
     env:
       DOCKERHUB_REPO: ${{ github.repository_owner }}/${{ matrix.image.name }}
       GHCR_REPO: ghcr.io/${{ github.repository }}/${{ matrix.image.name }}
-      DIGESTS: ${{ runner.temp }}/digests-${{ matrix.image }}
     permissions:
       contents: read
       packages: write
@@ -85,21 +84,21 @@ jobs:
           context: ${{ matrix.image.context }}
           platforms: ${{ matrix.os.platform }}
           labels: ${{ steps.meta.outputs.labels }}
-          # cache-from: type=gha
-          # cache-to: type=gha,mode=max
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           outputs: type=image,"name=${{ env.DOCKERHUB_REPO }},${{ env.GHCR_REPO }}",push-by-digest=true,name-canonical=true,push=true
 
       - name: Export digest
         run: |
-          mkdir -p ${{ env.DIGESTS }}
+          mkdir -p ${{ runner.temp }}/digests-${{ matrix.image.name }}
           digest="${{ steps.build.outputs.digest }}"
-          touch "${{ env.DIGESTS }}/${digest#sha256:}"          
+          touch "${{ runner.temp }}/digests-${{ matrix.image.name }}/${digest#sha256:}"          
 
       - name: Upload digest
         uses: actions/upload-artifact@v4
         with:
           name: digests-${{ matrix.image.name }}-${{ env.PLATFORM_PAIR }}
-          path: ${{ env.DIGESTS }}/*
+          path: ${{ runner.temp }}/digests-${{ matrix.image.name }}/*
           if-no-files-found: error
           retention-days: 1
 
@@ -117,7 +116,6 @@ jobs:
     env:
       DOCKERHUB_REPO: ${{ github.repository_owner }}/${{ matrix.image }}
       GHCR_REPO: ghcr.io/${{ github.repository }}/${{ matrix.image }}
-      DIGESTS: ${{ runner.temp }}/digests-${{ matrix.image }}
     permissions:
       contents: read
       packages: write
@@ -127,7 +125,7 @@ jobs:
       - name: Download digests
         uses: actions/download-artifact@v4
         with:
-          path: ${{ env.DIGESTS }}
+          path: ${{ runner.temp }}/digests-${{ matrix.image }}
           pattern: digests-*
           merge-multiple: true
 
@@ -162,7 +160,7 @@ jobs:
             type=semver,pattern={{major}}        
 
       - name: Create manifest list and push
-        working-directory: ${{ env.DIGESTS }}
+        working-directory: ${{ runner.temp }}/digests-${{ matrix.image }}
         run: |
           docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
             $(printf '${{ env.DOCKERHUB_REPO }}@sha256:%s ' *)
