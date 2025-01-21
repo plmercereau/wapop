@@ -2,6 +2,10 @@
 .envrc
 .direnv/
 
+# do not store chart and dist to git
+chart/
+dist/
+
 # devenv configuration files
 .devenv.flake.nix
 .devenv/
