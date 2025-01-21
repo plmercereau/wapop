@@ -74,20 +74,19 @@ jobs:
 
       - name: Build and push by digest
         uses: docker/build-push-action@v6
-        id: push
+        id: build
         with:
           context: ${{ matrix.image.context }}
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
-          # cache-from: type=gha
-          # cache-to: type=gha,mode=max
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           outputs: type=image,"name=${{ env.DOCKERHUB_REPO }},${{ env.GHCR_REPO }}",push-by-digest=true,name-canonical=true,push=true
 
       - name: Export digest
         run: |
           mkdir -p ${{ runner.temp }}/digests-${{ matrix.image.name }}
           digest="${{ steps.build.outputs.digest }}"
-          echo "${{ steps.build.outputs.digest }}"
           touch "${{ runner.temp }}/digests-${{ matrix.image.name }}/${digest#sha256:}"          
 
       - name: Upload digest
