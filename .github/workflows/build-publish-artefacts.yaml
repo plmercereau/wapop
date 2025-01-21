@@ -214,11 +214,21 @@ jobs:
           registry_username: ${{ github.actor }}
           registry_password: ${{ secrets.GITHUB_TOKEN }}
           update_dependencies: 'true' 
-      - run: |
+
+      - name: Amend a file
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add chart dist
+          git commit --amend -m "$(git log -1 --pretty=%B)" --no-edit
+
+      - name: Delete old tag
+        run: |
           git tag -d ${{ github.ref_name }}
-          git push origin --delete "${{ github.ref_name }}"
-      - uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "Release chart and installer ${{ env.VERSION }}"
-          tagging_message: "${{ github.ref_name }}"
-          push_options: '--force'
+          git push origin :refs/tags/${{ github.ref_name }}
+
+      - name: Create and push new tag
+        run: |
+          git tag ${{ github.ref_name }}
+          git push origin ${{ github.ref_name }}
+          
