@@ -1,6 +1,7 @@
 # direnv configuration files
 .envrc
 .direnv/
+devenv.local.nix
 
 # devenv configuration files
 .devenv.flake.nix

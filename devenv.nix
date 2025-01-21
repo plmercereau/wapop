@@ -6,8 +6,7 @@
   ...
 }: {
   cachix = {
-    pull = ["devenv"];
-    push = "plmercereau";
+    pull = ["devenv" "plmercereau"];
   };
 
   packages = let
