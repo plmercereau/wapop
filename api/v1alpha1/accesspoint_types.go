@@ -40,7 +40,7 @@ type AccessPointStatus struct {
 
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
-// +kubebuilder:resource:scope=Cluster,shortName=apn
+// +kubebuilder:resource:scope=Cluster,shortName=ap
 
 // AccessPoint is the Schema for the accesspoints API
 type AccessPoint struct {

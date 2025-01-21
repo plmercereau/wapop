@@ -12,7 +12,7 @@ spec:
     listKind: AccessPointList
     plural: accesspoints
     shortNames:
-    - apn
+    - ap
     singular: accesspoint
   scope: Cluster
   versions:
