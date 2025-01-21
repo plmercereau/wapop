@@ -127,7 +127,7 @@ func (r *NodeReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.
 		return ctrl.Result{}, nil
 	}
 
-	jobName := "wifi-job-" + node.Name // TODO
+	jobName := "wapop-job-" + node.Name
 	// Get the job. if it exists, delete it
 	job := &batchv1.Job{}
 	if err := r.Get(ctx, types.NamespacedName{

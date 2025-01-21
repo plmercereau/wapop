@@ -21,7 +21,3 @@
 - 2Ghz + 5Ghz
 - custom br0, wlan0
 - deactivate ap
-
-## TODO
-
-- [ ] Readme
