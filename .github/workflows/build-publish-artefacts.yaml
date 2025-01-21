@@ -214,6 +214,7 @@ jobs:
           registry_username: ${{ github.actor }}
           registry_password: ${{ secrets.GITHUB_TOKEN }}
           update_dependencies: 'true' 
+      - run: git tag -d ${{ github.ref_name }}
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Release chart and installer ${{ env.VERSION }}"
