@@ -203,7 +203,17 @@ jobs:
       - name: Generate the consolidated YAML installer
         run: devenv shell make build-installer VERSION=${{ env.VERSION }}
       
-      - name: Chart | Push
+      - name: Upload installer to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: dist/install.yaml
+          asset_name: install.yaml
+          tag: ${{ github.ref }}
+          overwrite: true
+          # body: "This is my release text"
+          
+      - name: Push chart
         uses: appany/helm-oci-chart-releaser@v0.4.2
         with:
           name: wapop-chart
@@ -215,20 +225,11 @@ jobs:
           registry_password: ${{ secrets.GITHUB_TOKEN }}
           update_dependencies: 'true' 
 
-      - name: Amend a file
-        run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-          git add chart dist
-          git commit --amend -m "$(git log -1 --pretty=%B)" --no-edit
-
-      - name: Delete old tag
-        run: |
-          git tag -d ${{ github.ref_name }}
-          git push origin :refs/tags/${{ github.ref_name }}
-
-      - name: Create and push new tag
-        run: |
-          git tag ${{ github.ref_name }}
-          git push origin ${{ github.ref_name }}
-          
+      - name: Upload chart to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: wapop-chart-${{ env.VERSION }}.tgz
+          asset_name: wapop-chart-${{ env.VERSION }}.tgz
+          tag: ${{ github.ref }}
+          overwrite: true
