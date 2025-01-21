@@ -5,6 +5,11 @@
   inputs,
   ...
 }: {
+  cachix = {
+    pull = ["devenv"];
+    push = "plmercereau";
+  };
+
   packages = let
     custom-operator-sdk = pkgs.stdenv.mkDerivation {
       name = "operator-sdk";

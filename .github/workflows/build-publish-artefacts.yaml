@@ -185,6 +185,10 @@ jobs:
 
       - uses: cachix/cachix-action@v14
         with:
+          name: devenv
+
+      - uses: cachix/cachix-action@v14
+        with:
           name: plmercereau
           authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
 
