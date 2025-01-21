@@ -16,7 +16,7 @@ resources:
   controller: true
   domain: networking.platyplus.io
   group: wifi
-  kind: AccessPointNode
+  kind: AccessPoint
   path: github.com/plmercereau/wapop/api/v1alpha1
   version: v1alpha1
 version: "3"

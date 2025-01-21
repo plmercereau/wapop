@@ -29,7 +29,7 @@ rules:
 - apiGroups:
   - wifi.networking.platyplus.io
   resources:
-  - accesspointnodes
+  - accesspoints
   verbs:
   - create
   - delete
@@ -41,13 +41,13 @@ rules:
 - apiGroups:
   - wifi.networking.platyplus.io
   resources:
-  - accesspointnodes/finalizers
+  - accesspoints/finalizers
   verbs:
   - update
 - apiGroups:
   - wifi.networking.platyplus.io
   resources:
-  - accesspointnodes/status
+  - accesspoints/status
   verbs:
   - get
   - patch

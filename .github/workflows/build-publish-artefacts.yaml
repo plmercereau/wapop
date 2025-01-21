@@ -2,6 +2,7 @@
 # TODO https://www.blacksmith.sh/blog/building-multi-platform-docker-images-for-arm64-in-github-actions
 # TODO https://docs.docker.com/build/ci/github-actions/multi-platform/#distribute-build-across-multiple-runners
 # TODO add a cachix token once open-sourced
+# TODO run and commit make build-installer on release/tag, and on push, use "latest" image version
 name: Build and Publish artefacts
 
 on:
@@ -111,7 +112,7 @@ jobs:
         run: devenv shell make helm VERSION=${{ env.VERSION }}
       
       - name: Chart | Push
-        uses: appany/helm-oci-chart-releaser@v0.3.0
+        uses: appany/helm-oci-chart-releaser@v0.4.2
         with:
           name: wapop-chart
           repository: ${{ github.repository_owner }}

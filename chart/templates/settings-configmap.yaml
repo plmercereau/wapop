@@ -1,8 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: wifi-settings
-data:
-  ssid: "{{ .Values.ssid }}"
-  nodeSelector: |
-    {{ .Values.settings.nodeSelector | toYaml | nindent 4 }}

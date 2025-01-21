@@ -33,9 +33,9 @@ type NodeReconciler struct {
 	Scheme *runtime.Scheme
 }
 
-// +kubebuilder:rbac:groups=wifi.networking.platyplus.io,resources=accesspointnodes,verbs=get;list;watch;create;update;patch;delete
-// +kubebuilder:rbac:groups=wifi.networking.platyplus.io,resources=accesspointnodes/status,verbs=get;update;patch
-// +kubebuilder:rbac:groups=wifi.networking.platyplus.io,resources=accesspointnodes/finalizers,verbs=update
+// +kubebuilder:rbac:groups=wifi.networking.platyplus.io,resources=accesspoints,verbs=get;list;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups=wifi.networking.platyplus.io,resources=accesspoints/status,verbs=get;update;patch
+// +kubebuilder:rbac:groups=wifi.networking.platyplus.io,resources=accesspoints/finalizers,verbs=update
 // +kubebuilder:rbac:groups=core,resources=nodes,verbs=get;list;watch
 // +kubebuilder:rbac:groups="",resources=secrets;configmaps,verbs=get;list;watch
 // +kubebuilder:rbac:groups=batch,resources=jobs,verbs=get;list;watch;create;update;patch;delete
@@ -92,38 +92,38 @@ func (r *NodeReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.
 		activate = selector.Matches(labels.Set(node.Labels))
 	}
 
-	// check if the corresponding AccessPointNode exists. If not, create it
-	apNode := &v1alpha1.AccessPointNode{}
-	accessPointNodeName := client.ObjectKey{
+	// check if the corresponding AccessPoint exists. If not, create it
+	ap := &v1alpha1.AccessPoint{}
+	accessPointName := client.ObjectKey{
 		Name: node.Name,
 	}
-	if err := r.Get(ctx, accessPointNodeName, apNode); err != nil {
+	if err := r.Get(ctx, accessPointName, ap); err != nil {
 		if client.IgnoreNotFound(err) == nil {
-			// AccessPointNode does not exist, create it
-			apNode = &v1alpha1.AccessPointNode{
+			// AccessPoint does not exist, create it
+			ap = &v1alpha1.AccessPoint{
 				ObjectMeta: ctrl.ObjectMeta{
 					Name: node.Name,
 				},
-				Spec: v1alpha1.AccessPointNodeSpec{
+				Spec: v1alpha1.AccessPointSpec{
 					// Name: node.Name,
 				},
 			}
-			controllerutil.SetControllerReference(node, apNode, r.Scheme)
-			if err := r.Create(ctx, apNode); err != nil {
-				logger.Error(err, "unable to create AccessPointNode", "name", accessPointNodeName)
+			controllerutil.SetControllerReference(node, ap, r.Scheme)
+			if err := r.Create(ctx, ap); err != nil {
+				logger.Error(err, "unable to create AccessPoint", "name", accessPointName)
 				return ctrl.Result{}, err
 			}
-			logger.Info("AccessPointNode created", "name", accessPointNodeName)
+			logger.Info("AccessPoint created", "name", accessPointName)
 		} else {
-			logger.Error(err, "unable to get AccessPointNode", "name", accessPointNodeName)
+			logger.Error(err, "unable to get AccessPoint", "name", accessPointName)
 			return ctrl.Result{}, err
 		}
 	}
 
 	hash := hashValues(node.Status.NodeInfo.BootID, activate, config.Data, secret.Data)
 	// Don't continue if the hash is the same
-	if apNode.Status.Hash == hash {
-		logger.Info("AccessPointNode already up to date")
+	if ap.Status.Hash == hash {
+		logger.Info("AccessPoint already up to date")
 		return ctrl.Result{}, nil
 	}
 
@@ -241,15 +241,15 @@ func (r *NodeReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.
 			},
 		},
 	}
-	controllerutil.SetControllerReference(apNode, job, r.Scheme)
+	controllerutil.SetControllerReference(ap, job, r.Scheme)
 	if err := r.Create(ctx, job); err != nil {
 		logger.Error(err, "unable to create Job")
 		return ctrl.Result{}, err
 	}
-	// update the AccessPointNode status
-	apNode.Status.Hash = hash
-	if err := r.Status().Update(ctx, apNode); err != nil {
-		logger.Error(err, "unable to update AccessPointNode status")
+	// update the AccessPoint status
+	ap.Status.Hash = hash
+	if err := r.Status().Update(ctx, ap); err != nil {
+		logger.Error(err, "unable to update AccessPoint status")
 		return ctrl.Result{}, err
 	}
 
@@ -260,7 +260,7 @@ func (r *NodeReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.
 func (r *NodeReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&corev1.Node{}).
-		Owns(&v1alpha1.AccessPointNode{}).
+		Owns(&v1alpha1.AccessPoint{}).
 		Owns(&batchv1.Job{}).
 		Watches(
 			&corev1.Secret{},

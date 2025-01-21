@@ -1,16 +1,16 @@
-# permissions for end users to view accesspointnodes.
+# permissions for end users to view accesspoints.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   labels:
     app.kubernetes.io/name: wapop
     app.kubernetes.io/managed-by: kustomize
-  name: accesspointnode-viewer-role
+  name: accesspoint-viewer-role
 rules:
 - apiGroups:
   - wifi.networking.platyplus.io
   resources:
-  - accesspointnodes
+  - accesspoints
   verbs:
   - get
   - list
@@ -18,6 +18,6 @@ rules:
 - apiGroups:
   - wifi.networking.platyplus.io
   resources:
-  - accesspointnodes/status
+  - accesspoints/status
   verbs:
   - get

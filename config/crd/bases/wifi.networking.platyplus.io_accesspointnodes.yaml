@@ -4,22 +4,22 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.16.5
-  name: accesspointnodes.wifi.networking.platyplus.io
+  name: accesspoints.wifi.networking.platyplus.io
 spec:
   group: wifi.networking.platyplus.io
   names:
-    kind: AccessPointNode
-    listKind: AccessPointNodeList
-    plural: accesspointnodes
+    kind: AccessPoint
+    listKind: AccessPointList
+    plural: accesspoints
     shortNames:
     - apn
-    singular: accesspointnode
+    singular: accesspoint
   scope: Cluster
   versions:
   - name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: AccessPointNode is the Schema for the accesspointnodes API
+        description: AccessPoint is the Schema for the accesspoints API
         properties:
           apiVersion:
             description: |-
@@ -39,10 +39,10 @@ spec:
           metadata:
             type: object
           spec:
-            description: AccessPointNodeSpec defines the desired state of AccessPointNode
+            description: AccessPointSpec defines the desired state of AccessPoint
             type: object
           status:
-            description: AccessPointNodeStatus defines the observed state of AccessPointNode
+            description: AccessPointStatus defines the observed state of AccessPoint
             properties:
               bootID:
                 type: string

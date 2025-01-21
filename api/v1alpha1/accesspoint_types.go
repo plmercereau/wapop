@@ -23,15 +23,15 @@ import (
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
-// AccessPointNodeSpec defines the desired state of AccessPointNode
-type AccessPointNodeSpec struct {
+// AccessPointSpec defines the desired state of AccessPoint
+type AccessPointSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
 }
 
-// AccessPointNodeStatus defines the observed state of AccessPointNode
-type AccessPointNodeStatus struct {
+// AccessPointStatus defines the observed state of AccessPoint
+type AccessPointStatus struct {
 	// +optional
 	BootID string `json:"bootID,omitempty"`
 	// +optional
@@ -42,24 +42,24 @@ type AccessPointNodeStatus struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:resource:scope=Cluster,shortName=apn
 
-// AccessPointNode is the Schema for the accesspointnodes API
-type AccessPointNode struct {
+// AccessPoint is the Schema for the accesspoints API
+type AccessPoint struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   AccessPointNodeSpec   `json:"spec,omitempty"`
-	Status AccessPointNodeStatus `json:"status,omitempty"`
+	Spec   AccessPointSpec   `json:"spec,omitempty"`
+	Status AccessPointStatus `json:"status,omitempty"`
 }
 
 // +kubebuilder:object:root=true
 
-// AccessPointNodeList contains a list of AccessPointNode
-type AccessPointNodeList struct {
+// AccessPointList contains a list of AccessPoint
+type AccessPointList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []AccessPointNode `json:"items"`
+	Items           []AccessPoint `json:"items"`
 }
 
 func init() {
-	SchemeBuilder.Register(&AccessPointNode{}, &AccessPointNodeList{})
+	SchemeBuilder.Register(&AccessPoint{}, &AccessPointList{})
 }
