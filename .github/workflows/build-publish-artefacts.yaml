@@ -8,27 +8,22 @@ on:
       - main
     tags:
       - "v*.*.*"
+env:
+  DOCKERHUB_REPO: ${{ github.repository }}
+  GHCR_REPO: ghcr.io/${{ github.repository }}
 
 jobs:
   build:
-    runs-on: ${{ matrix.os.image }}
+    name: "Build wapop"
+    runs-on: ${{ matrix.image }}
     strategy:
       fail-fast: false
       matrix:
-        os:
+        include:
           - image: ubuntu-24.04
             platform: linux/amd64
           - image: ubuntu-24.04-arm
             platform: linux/arm64
-        image:
-          - name: wapop
-            context: .
-          - name: network-manager
-            context: network-manager
-    name: "Build: ${{ matrix.image.name }} (${{ matrix.os.platform }})"
-    env:
-      DOCKERHUB_REPO: ${{ github.repository_owner }}/${{ matrix.image.name }}
-      GHCR_REPO: ghcr.io/${{ github.repository }}/${{ matrix.image.name }}
     permissions:
       contents: read
       packages: write
@@ -41,7 +36,7 @@ jobs:
           fetch-depth: 0
       - name: Prepare
         run: |
-          platform=${{ matrix.os.platform }}
+          platform=${{ matrix.platform }}
           echo "PLATFORM_PAIR=${platform//\//-}" >> $GITHUB_ENV          
 
       - name: Docker meta
@@ -75,41 +70,31 @@ jobs:
         uses: docker/build-push-action@v6
         id: build
         with:
-          context: ${{ matrix.image.context }}
-          platforms: ${{ matrix.os.platform }}
+          platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha,scope=${{ matrix.image.name }}-${{ matrix.os.platform }}
-          cache-to: type=gha,mode=max,scope=${{ matrix.image.name }}-${{ matrix.os.platform }}
+          cache-from: type=gha,scope=${{ github.repository }}-${{ matrix.platform }}
+          cache-to: type=gha,mode=max,scope=${{ github.repository }}-${{ matrix.platform }}
           outputs: type=image,"name=${{ env.DOCKERHUB_REPO }},${{ env.GHCR_REPO }}",push-by-digest=true,name-canonical=true,push=true
 
       - name: Export digest
         run: |
-          mkdir -p ${{ runner.temp }}/digests-${{ matrix.image.name }}
+          mkdir -p ${{ runner.temp }}/digests
           digest="${{ steps.build.outputs.digest }}"
-          touch "${{ runner.temp }}/digests-${{ matrix.image.name }}/${digest#sha256:}"          
+          touch "${{ runner.temp }}/digests/${digest#sha256:}"          
 
       - name: Upload digest
         uses: actions/upload-artifact@v4
         with:
-          name: digests-${{ matrix.image.name }}-${{ env.PLATFORM_PAIR }}
-          path: ${{ runner.temp }}/digests-${{ matrix.image.name }}/*
+          name: digests-${{ env.PLATFORM_PAIR }}
+          path: ${{ runner.temp }}/digests/*
           if-no-files-found: error
           retention-days: 1
 
   merge:
     runs-on: ubuntu-24.04
-    strategy:
-      fail-fast: false
-      matrix:
-        image:
-          - wapop
-          - network-manager
-    name: "Merge digests: ${{ matrix.image }}"
+    name: "Merge digests"
     needs:
       - build
-    env:
-      DOCKERHUB_REPO: ${{ github.repository_owner }}/${{ matrix.image }}
-      GHCR_REPO: ghcr.io/${{ github.repository }}/${{ matrix.image }}
     permissions:
       contents: read
       packages: write
@@ -119,8 +104,8 @@ jobs:
       - name: Download digests
         uses: actions/download-artifact@v4
         with:
-          path: ${{ runner.temp }}/digests-${{ matrix.image }}
-          pattern: digests-${{ matrix.image }}-*
+          path: ${{ runner.temp }}/digests
+          pattern: digests-*
           merge-multiple: true
 
       - name: Login to GitHub Container Registry
@@ -154,7 +139,7 @@ jobs:
             type=semver,pattern={{major}}        
 
       - name: Create manifest list and push
-        working-directory: ${{ runner.temp }}/digests-${{ matrix.image }}
+        working-directory: ${{ runner.temp }}/digests
         run: |
           docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
             $(printf '${{ env.DOCKERHUB_REPO }}@sha256:%s ' *)
@@ -210,7 +195,6 @@ jobs:
           asset_name: install.yaml
           tag: ${{ github.ref }}
           overwrite: true
-          # body: "This is my release text"
           
       - name: Push chart
         uses: appany/helm-oci-chart-releaser@v0.4.2

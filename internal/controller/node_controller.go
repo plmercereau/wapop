@@ -160,7 +160,7 @@ func (r *NodeReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.
 					Containers: []corev1.Container{
 						{
 							Name:  "configure",
-							Image: "plmercereau/network-manager",
+							Image: "registry.suse.com/suse/sl-micro/6.0/baremetal-os-container:2.1.3-4.7",
 							Command: []string{
 								"/bin/sh",
 								"-c",
