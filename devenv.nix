@@ -64,5 +64,7 @@
 
   # TODO go lint, fmt, test, etc
   git-hooks.hooks = {
+    gofmt.enable = true;
+    govet.enable = true;
   };
 }

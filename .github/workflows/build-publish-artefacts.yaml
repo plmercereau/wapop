@@ -1,5 +1,3 @@
-# TODO Readme on docker hub / ghcr.io
-
 name: Build and Publish artefacts
 
 on:
