@@ -289,7 +289,6 @@ catalog-push: ## Push a catalog image.
 	$(MAKE) docker-push IMG=$(CATALOG_IMG)
 
 helm: manifests
+	cd config/manager && kustomize edit set image controller=$(IMG)
 	kustomize build config/default | helmify -crd-dir 
-	@# add config/values.yaml at the beginning of the generated chart/values.yaml
-	yq eval '.controllerManager.manager.image.tag = "$(VERSION)"' -i chart/values.yaml
 	sed -i '1e cat config/values.yaml' chart/values.yaml
