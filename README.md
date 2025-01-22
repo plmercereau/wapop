@@ -5,7 +5,7 @@
 ### Prerequisites
 
 - Bridge
-- NM version
+- Use an image that contains the same network-manager version as in the node.
 
 ## Limitations
 
@@ -14,10 +14,9 @@
 
 ## Roadmap
 
-- custom image
 - rolling channels
 - automatic channels
-- max ap nodes
+- max AP nodes
 - 2Ghz + 5Ghz
 - custom br0, wlan0
 - deactivate ap

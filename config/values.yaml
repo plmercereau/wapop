@@ -1,3 +1,4 @@
+image: "registry.suse.com/suse/sl-micro/6.0/baremetal-os-container:2.1.3-4.7"
 ssid: ""
 # If the psk is set, it will create the secret
 # psk: "" 
