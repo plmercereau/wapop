@@ -156,6 +156,21 @@ func (r *NodeReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.
 			TTLSecondsAfterFinished: func(i32 int32) *int32 { return &i32 }(86400),
 			Template: corev1.PodTemplateSpec{
 				Spec: corev1.PodSpec{
+					Affinity: &corev1.Affinity{
+						NodeAffinity: &corev1.NodeAffinity{
+							RequiredDuringSchedulingIgnoredDuringExecution: &corev1.NodeSelector{
+								NodeSelectorTerms: []corev1.NodeSelectorTerm{
+									{
+										MatchFields: []corev1.NodeSelectorRequirement{{
+											Key:      "metadata.name",
+											Operator: corev1.NodeSelectorOpIn,
+											Values:   []string{node.Name},
+										}},
+									},
+								},
+							},
+						},
+					},
 					HostNetwork: true,
 					Containers: []corev1.Container{
 						{
