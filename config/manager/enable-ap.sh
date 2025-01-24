@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# Define variables
 SSID="$ssid"
 PSK="$psk"
-CON_NAME="wlan0-ap"
-IFNAME="wlan0"
-MASTER="br0"
+IFNAME="$wlan_interface"
+MASTER="$bridge_interface"
+CON_NAME="$IFNAME-ap"
+CHANNEL=6 # TODO implement best channel picker, and 6GHz support
 
 # Check if the connection exists
 if nmcli connection show "$CON_NAME" > /dev/null 2>&1; then
@@ -31,7 +31,7 @@ else
         mode ap \
         ipv4.method shared \
         wifi.band bg \
-        wifi.channel 6 \
+        wifi.channel $CHANNEL \
         wifi-sec.key-mgmt wpa-psk \
         wifi-sec.psk "$PSK" \
         connection.master "$MASTER" \
@@ -40,3 +40,9 @@ fi
 
 # Bring up the connection
 nmcli connection up "$CON_NAME"
+
+# Signal that the AP is ready - it is then used in the pod as a readiness probe
+echo "ready" > /tmp/ready
+
+# Keep the script running so the pod doesn't exit. It is a trade-off between using a daemonset and a system of jobs.
+sleep infinity

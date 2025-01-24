@@ -179,10 +179,7 @@ jobs:
           echo Version: $VERSION
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-      - name: Generate the chart
-        run: devenv shell make helm VERSION=${{ env.VERSION }}
-
-      - name: Generate the consolidated YAML installer
+      - name: Generate consolidated YAML installer
         run: devenv shell make build-installer VERSION=${{ env.VERSION }}
       
       - name: Upload installer to release
@@ -194,7 +191,12 @@ jobs:
           tag: ${{ github.ref }}
           overwrite: true
           
+      - name: Generate chart
+        if: false
+        run: devenv shell make helm VERSION=${{ env.VERSION }}
+
       - name: Push chart
+        if: false
         uses: appany/helm-oci-chart-releaser@v0.4.2
         with:
           name: wapop-chart
@@ -207,6 +209,7 @@ jobs:
           update_dependencies: 'true' 
 
       - name: Upload chart to release
+        if: false
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
