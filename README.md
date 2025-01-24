@@ -16,5 +16,8 @@
 - 2Ghz + 5Ghz
 - automatic channels
 - max AP nodes
-- custom br0, wlan0
 - deactivate ap (preStop hook)
+
+## TODO
+
+- adapt GH action
