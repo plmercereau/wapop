@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 CONNECTION_NAME="$WLAN_INTERFACE-ap"
 CHANNEL=6 # TODO implement best channel picker, and 6GHz support

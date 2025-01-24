@@ -1,1 +1,0 @@
-{ cachix.push = "plmercereau"; }
