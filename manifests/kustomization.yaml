@@ -11,6 +11,7 @@ resources:
 configMapGenerator:
 - files:
   - enable-ap.sh
+  - disable-ap.sh
   name: scripts
 
 generatorOptions:

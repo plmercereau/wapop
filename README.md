@@ -16,7 +16,6 @@
 - 2Ghz + 5Ghz
 - automatic channels
 - max AP nodes
-- deactivate ap (preStop hook)
 
 ## TODO
 

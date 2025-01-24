@@ -18,54 +18,47 @@ spec:
     spec:
       hostNetwork: true
       restartPolicy: Always
-      # securityContext:
-      #   privileged: true
-      # TODO does not well work with the PreStop lifecycle, like the current "echo" is not working and we wait 30s every time
       terminationGracePeriodSeconds: 30
       containers:
-      - command:
-        - /bin/sh
-        - -c
-        - /app/enable-ap.sh
-        image: ap-manager:latest
-        imagePullPolicy: IfNotPresent
-        lifecycle:
-          preStop:
+        - command:
+            - /app/enable-ap.sh
+          image: ap-manager:latest
+          imagePullPolicy: IfNotPresent
+          name: wapop
+          securityContext:
+            privileged: true
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  - /app/disable-ap.sh
+          env:
+            - name: WLAN_INTERFACE
+              value: "wlan0"
+            - name: BRIDGE_INTERFACE
+              value: "br0"
+          volumeMounts:
+            - mountPath: /etc/NetworkManager
+              name: host-etc-nm
+            - mountPath: /var/run/dbus/system_bus_socket
+              name: dbus-socket
+            - mountPath: /app
+              name: scripts
+          readinessProbe:
             exec:
               command:
-              - /bin/sh
-              - -c
-              - echo "stopping the access point" # TODO code the "AP down" script
-        name: wapop
-        securityContext:
-          privileged: true
-        env:
-          - name: WLAN_INTERFACE
-            value: "wlan0"
-          - name: BRIDGE_INTERFACE
-            value: "br0"
-        volumeMounts:
-        - mountPath: /etc/NetworkManager
-          name: host-etc-nm
-        - mountPath: /var/run/dbus/system_bus_socket
-          name: dbus-socket
-        - mountPath: /app
-          name: scripts
-        readinessProbe:
-          exec:
-            command:
-              - cat
-              - /tmp/ready
-          initialDelaySeconds: 5
-          periodSeconds: 5
+                - cat
+                - /tmp/ready
+            initialDelaySeconds: 1
+            periodSeconds: 2
       volumes:
-      - hostPath:
-          path: /etc/NetworkManager
-        name: host-etc-nm
-      - hostPath:
-          path: /var/run/dbus/system_bus_socket
-        name: dbus-socket
-      - configMap:
-          defaultMode: 493
-          name: wapop-scripts
-        name: scripts
+        - hostPath:
+            path: /etc/NetworkManager
+          name: host-etc-nm
+        - hostPath:
+            path: /var/run/dbus/system_bus_socket
+          name: dbus-socket
+        - configMap:
+            defaultMode: 493
+            name: wapop-scripts
+          name: scripts
