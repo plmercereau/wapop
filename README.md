@@ -13,8 +13,6 @@
 
 ## Roadmap
 
-- 2Ghz + 5Ghz
-- automatic channels
 - max AP nodes
 
 ## TODO

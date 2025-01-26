@@ -49,8 +49,8 @@ spec:
               command:
                 - cat
                 - /tmp/ready
-            initialDelaySeconds: 1
-            periodSeconds: 2
+            initialDelaySeconds: 20 # Wait 20 seconds before checking. It avoids starting other pods before the first one is ready
+            periodSeconds: 1
       volumes:
         - hostPath:
             path: /etc/NetworkManager
