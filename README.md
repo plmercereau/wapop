@@ -14,7 +14,3 @@
 ## Roadmap
 
 - max AP nodes
-
-## TODO
-
-- adapt GH action
