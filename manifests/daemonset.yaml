@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: daemonset
+  namespace: system
+spec:
+  selector:
+    matchLabels:
+      app: wapop
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1  # Ensures pods are updated/created one at a time
+  template:
+    metadata:
+      labels:
+        app: wapop
+    spec:
+      hostNetwork: true
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      containers:
+        - command:
+            - /app/enable-ap.sh
+          image: ap-manager:latest
+          imagePullPolicy: IfNotPresent
+          name: wapop
+          securityContext:
+            privileged: true
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  - /app/disable-ap.sh
+          env:
+            - name: WLAN_INTERFACE
+              value: "wlan0"
+            - name: BRIDGE_INTERFACE
+              value: "br0"
+          volumeMounts:
+            - mountPath: /etc/NetworkManager
+              name: host-etc-nm
+            - mountPath: /var/run/dbus/system_bus_socket
+              name: dbus-socket
+            - mountPath: /app
+              name: scripts
+          readinessProbe:
+            exec:
+              command:
+                - cat
+                - /tmp/ready
+            initialDelaySeconds: 20 # Wait 20 seconds before checking. It avoids starting other pods before the first one is ready
+            periodSeconds: 1
+      volumes:
+        - hostPath:
+            path: /etc/NetworkManager
+          name: host-etc-nm
+        - hostPath:
+            path: /var/run/dbus/system_bus_socket
+          name: dbus-socket
+        - configMap:
+            defaultMode: 493
+            name: wapop-scripts
+          name: scripts

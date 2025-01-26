@@ -1,14 +1,18 @@
-resources:
-- manager.yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-images:
-- name: controller
-  newName: plmercereau/wapop
-  newTag: 0.0.1
+
+namespace: wapop
+namePrefix: wapop-
+
+resources:
+- daemonset.yaml
+- namespace.yaml
+
 configMapGenerator:
 - files:
   - enable-ap.sh
+  - disable-ap.sh
   name: scripts
+
 generatorOptions:
   disableNameSuffixHash: true

@@ -1,3 +1,3 @@
-docker_build('plmercereau/wapop', '.')
+allow_k8s_contexts('rpi')
 
-k8s_yaml(kustomize('./config/default'))
+k8s_yaml(kustomize('./example'))

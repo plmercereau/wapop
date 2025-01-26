@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: daemonset
+  annotations:
+    secret.reloader.stakater.com/reload: "wifi-settings"
+spec:
+  template:
+    spec:
+      nodeSelector:
+        productName: "rpi"
+      containers:
+        - name: wapop
+          env:
+            - name: SSID
+              value: "rpi-voila"
+            - name: PSK
+              valueFrom:
+                secretKeyRef:
+                  name: wifi-settings
+                  key: psk
